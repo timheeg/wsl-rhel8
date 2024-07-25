@@ -122,6 +122,16 @@ log Get the project git repo...
 git_repo=$(git config --get remote.origin.url)
 log "git_repo=$git_repo"
 
+log Get local git config for container...
+user_git_config=/tmp/.gitconfig
+{
+  printf "[user]\n\tname = "
+  git config user.name
+  printf "\temail = "
+  git config user.email
+} >> $user_git_config
+dryrun mv "$user_git_config" "$project_dir/tools/docker/dev/"
+
 log Build the docker image...
 dryrun docker build \
   $no_cache_cmd \
@@ -169,6 +179,9 @@ dryrun rm -f "$container_file"
 
 log Remove container instance...
 dryrun docker container rm "$container_id"
+
+log Remove temp gitconfig...
+dryrun rm -r "$project_dir/tools/docker/dev/.gitconfig"
 
 log Done! "\n"
 log Enable WSL integration in Docker Desktop settings.

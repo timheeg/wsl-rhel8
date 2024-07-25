@@ -28,7 +28,7 @@ RUN dnf update -y \
 # Install root user .bashrc
 COPY .bashrc /root/
 
-# Create the developer (non-root) user
+# 🛂 Create the non-root (developer) user
 ARG USERNAME
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
@@ -49,9 +49,29 @@ RUN groupadd --gid $USER_GID $USERNAME \
 # Specify as the default user in the WSL config
 RUN printf "\n[user]\ndefault = $USERNAME\n" >> /etc/wsl.conf
 
+# 🔀 Configure system git configuration
+COPY git-config.sh /tmp/.
+RUN /tmp/git-config.sh && rm /tmp/git-config.sh
+
+# 🔀 Setup user-specific git configuration
+#
+# Copy the temp generated user config to the "global" user home with the script
+#
+COPY .gitconfig /home/$USERNAME
+RUN chown $USER_UID:$USERNAME /home/$USERNAME/.gitconfig
+
+COPY git-config-user.sh /tmp/.
+RUN chown $USER_UID:$USERNAME /tmp/git-config-user.sh \
+  && chmod +x /tmp/git-config-user.sh
+
+# 🧑‍💻 Change to non-root user
 USER $USERNAME
 
 # Install the .bashrc for the user
 COPY .bashrc /home/$USERNAME
+
+# Then execute global config settings.
+#
+RUN /tmp/git-config-user.sh
 
 CMD [ "bash" ]
