@@ -16,6 +16,16 @@ See `tools/dev/builds.sh --help` for details.
 You can use the Git Bash terminal that comes with Git for Windows or you could
 try your default WSL distribution.
 
+## RHEL Subscription
+
+This image is based on the RHEL8 UBI image and requires a RHEL subscription,
+such as a free developer subscription.
+
+The WSL container requires you register your subscription and assumes you have
+an environment variable named `RHEL8_ORG` defined with your organization and
+an environment variable named `RHEL8_ACTIVATION_KEY` defined with your
+activation key identifier.
+
 ## Development Usage
 
 Once the development image is available in WSL, enable WSL integration in Docker
