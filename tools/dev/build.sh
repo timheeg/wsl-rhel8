@@ -135,12 +135,11 @@ dryrun mv "$user_git_config" "$project_dir/tools/docker/dev/"
 log Build the docker image...
 dryrun docker build \
   $no_cache_cmd \
-  --rm \
   --build-arg BASE_IMAGE_NAME="registry.access.redhat.com/ubi8/ubi" \
   --build-arg BASE_IMAGE_TAG="8.9-1136" \
-  --build-arg RHEL8_ORG="$RHEL8_ORG" \
-  --build-arg RHEL8_ACTIVATION_KEY="$RHEL8_ACTIVATION_KEY" \
   --build-arg USERNAME="$USERNAME" \
+  --secret id=RHEL8_ORG \
+  --secret id=RHEL8_ACTIVATION_KEY \
   --tag "$image_name:$image_tag" \
   "$project_dir/tools/docker/dev/"
 
