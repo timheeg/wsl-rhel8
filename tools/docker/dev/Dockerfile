@@ -64,14 +64,15 @@ COPY git-config-user.sh /tmp/.
 RUN chown $USER_UID:$USER_GID /tmp/git-config-user.sh \
   && chmod +x /tmp/git-config-user.sh
 
+# Install the .bashrc for the user
+COPY .bashrc /home/$USERNAME
+RUN chown $USER_UID:$USER_GID "/home/$USERNAME/.bashrc" \
+  && chmod 644 "/home/$USERNAME/.bashrc"
+
 # 🧑‍💻 Change to non-root user
 USER $USERNAME
 
-# Install the .bashrc for the user
-COPY .bashrc /home/$USERNAME
-
-# Then execute global config settings.
-#
+# Execute global git config settings.
 RUN /tmp/git-config-user.sh
 
 CMD [ "bash" ]
