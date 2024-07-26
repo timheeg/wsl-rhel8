@@ -69,6 +69,8 @@ USER $USERNAME
 
 # Install the .bashrc for the user
 COPY .bashrc /home/$USERNAME
+RUN chown $USER_UID:$USERNAME "/home/$USERNAME/.bashrc" \
+  && chmod 644 "/home/$USERNAME/.bashrc"
 
 # Then execute global config settings.
 #
